@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +39,13 @@ class _ProfilePageState extends State<ProfilePage>
   // Email regex (lebih fleksibel)
   final RegExp _emailReg =
   RegExp(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
+
+  // Password regex: min 8, at least one uppercase, one digit, one special char
+  final RegExp _passReg = RegExp(
+      r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)'
+      r'(?=.*[!@#\$%\^&*(),.?":{}|<>]).{8,}$'
+  );
+
 
   @override
   void initState() {
@@ -181,14 +187,22 @@ class _ProfilePageState extends State<ProfilePage>
         false;
   }
 
-  // 🔹 Validasi sederhana input profil
+  // 🔹 Validasi sederhana input profil (sudah include password opsional)
   String? _validateInputs({
     required String name,
     required String email,
+    String? password,
   }) {
     if (name.trim().isEmpty) return 'Nama wajib diisi';
     if (email.trim().isEmpty) return 'Email wajib diisi';
     if (!_emailReg.hasMatch(email.trim())) return 'Format email tidak valid';
+
+    if (password != null && password.trim().isNotEmpty) {
+      if (!_passReg.hasMatch(password)) {
+        return 'Password harus minimal 8 karakter, berisi huruf besar, angka, dan karakter khusus';
+      }
+    }
+
     return null;
   }
 
@@ -198,7 +212,8 @@ class _ProfilePageState extends State<ProfilePage>
     final email = _emailController.text.trim();
     final newPassPlain = _passController.text;
 
-    final err = _validateInputs(name: name, email: email);
+    // gunakan password pada validasi (hanya jika diisi)
+    final err = _validateInputs(name: name, email: email, password: newPassPlain);
     if (err != null) {
       _showCustomSnackBar(
         message: err,
@@ -279,6 +294,7 @@ class _ProfilePageState extends State<ProfilePage>
       userEmail = updatedUser['email'];
       _storedObfuscatedPass = updatedUser['pass'];
       _loading = false;
+      // tampilkan plaintext lokal (agar user bisa lihat / edit lagi)
       _passController.text = _deobfuscatePassword(_storedObfuscatedPass ?? '');
     });
 
@@ -407,8 +423,10 @@ class _ProfilePageState extends State<ProfilePage>
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined, color: Colors.white),
-                title: const Text('Ambil dari Kamera', style: TextStyle(color: Colors.white)),
+                leading:
+                const Icon(Icons.camera_alt_outlined, color: Colors.white),
+                title:
+                const Text('Ambil dari Kamera', style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickProfileImage(source: ImageSource.camera);
@@ -544,230 +562,279 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          const _NeonGrid(),
-          Positioned(
-            top: -80,
-            left: -60,
-            child:
-            _GlowBlob(color: const Color(0xFF00E5FF).withOpacity(0.18), size: 260),
-          ),
-          Positioned(
-            bottom: -100,
-            right: -60,
-            child:
-            _GlowBlob(color: const Color(0xFF7C4DFF).withOpacity(0.18), size: 300),
-          ),
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 6),
-                // Avatar Neon
-                Center(
-                  child: AnimatedBuilder(
-                    animation: _glowCtrl,
-                    builder: (context, _) {
-                      final t = _glowCtrl.value;
-                      final blur = 18 + 14 * t;
-                      final spread = 1 + 2 * t;
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 800;
+          final contentWidth = isDesktop ? 700.0 : double.infinity;
+          final horizontalPadding = isDesktop ? 60.0 : 20.0;
 
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const RadialGradient(
-                                colors: [Color(0xFF0A1430), Color(0xFF0A0F20)],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF00E5FF).withOpacity(0.35),
-                                  blurRadius: blur,
-                                  spreadRadius: spread,
-                                ),
-                                BoxShadow(
-                                  color: const Color(0xFF7C4DFF).withOpacity(0.25),
-                                  blurRadius: blur * 0.8,
-                                  spreadRadius: spread * 0.6,
-                                ),
-                              ],
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.08),
-                                width: 2,
-                              ),
-                            ),
-                            child: CustomPaint(
-                              painter: _SweepRingPainter(progress: t),
-                              child: Center(
-                                child: ClipOval(
-                                  child: SizedBox(
-                                    width: 110,
-                                    height: 110,
-                                    child: _profileImageBytes != null
-                                        ? Image.memory(
-                                      _profileImageBytes!,
-                                      fit: BoxFit.cover,
-                                    )
-                                        : const Icon(Icons.person_rounded,
-                                        color: Colors.white, size: 74),
-                                  ),
-                                ),
-                              ),
-                            ),
+          return Stack(
+            children: [
+              const _NeonGrid(),
+              Positioned(
+                top: -80,
+                left: -60,
+                child: _GlowBlob(
+                  color: const Color(0xFF00E5FF).withOpacity(0.18),
+                  size: 260,
+                ),
+              ),
+              Positioned(
+                bottom: -100,
+                right: -60,
+                child: _GlowBlob(
+                  color: const Color(0xFF7C4DFF).withOpacity(0.18),
+                  size: 300,
+                ),
+              ),
+              SingleChildScrollView(
+                padding:
+                EdgeInsets.fromLTRB(horizontalPadding, 20, horizontalPadding, 32),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: contentWidth),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 6),
+                        _buildAvatar(), // pindahin stack avatar ke fungsi tersendiri
+                        const SizedBox(height: 18),
+                        Text(
+                          userName ?? 'Guest User',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
                           ),
-                          // tombol edit kecil di pojok kanan bawah avatar
-                          Positioned(
-                            bottom: 4,
-                            right: 4,
-                            child: Row(
-                              children: [
-                                // tombol hapus jika ada foto
-                                if (_profileImageBytes != null)
-                                  GestureDetector(
-                                    onTap: _removeProfileImage,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF0E1A33),
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.white.withOpacity(0.08),
-                                        ),
-                                      ),
-                                      child: const Icon(
-                                        Icons.delete_outline,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                const SizedBox(width: 8),
-                                GestureDetector(
-                                  onTap: _chooseImageSource, // <-- buka pilihan kamera/galeri
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF0E1A33),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.08),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                        ),
+                        const SizedBox(height: 6),
+                        _NeonPill(text: userEmail ?? 'guest@example.com'),
+                        const SizedBox(height: 28),
+                        _NeonDivider(label: 'Edit Information'),
+                        const SizedBox(height: 16),
+                        _NeonCard(
+                          child: isDesktop
+                              ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: _neonTextField(
+                                  icon: Icons.person_outline,
+                                  label: 'Nama Lengkap',
+                                  controller: _nameController,
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _neonTextField(
+                                  icon: Icons.email_outlined,
+                                  label: 'Email',
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _neonTextField(
+                                  icon: Icons.lock_outline,
+                                  label: 'Password (lihat / sembunyikan)',
+                                  controller: _passController,
+                                  obscure: true,
+                                  obscureFlag: _obscurePass,
+                                  onToggleObscure: () =>
+                                      setState(() => _obscurePass = !_obscurePass),
+                                ),
+                              ),
+                            ],
+                          )
+                              : Column(
+                            children: [
+                              _neonTextField(
+                                icon: Icons.person_outline,
+                                label: 'Nama Lengkap',
+                                controller: _nameController,
+                              ),
+                              const SizedBox(height: 12),
+                              _neonTextField(
+                                icon: Icons.email_outlined,
+                                label: 'Email',
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              const SizedBox(height: 12),
+                              _neonTextField(
+                                icon: Icons.lock_outline,
+                                label: 'Password (lihat / sembunyikan)',
+                                controller: _passController,
+                                obscure: true,
+                                obscureFlag: _obscurePass,
+                                onToggleObscure: () =>
+                                    setState(() => _obscurePass = !_obscurePass),
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    },
+                        ),
+                        const SizedBox(height: 22),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _NeonButton(
+                                text: _loading ? 'Menyimpan...' : 'Simpan Perubahan',
+                                icon:
+                                _loading ? Icons.hourglass_top_rounded : Icons.save_rounded,
+                                onPressed: _loading ? null : _saveUserData,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _NeonButton(
+                                text: 'Logout',
+                                icon: Icons.logout_rounded,
+                                onPressed: _logout,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        Opacity(
+                          opacity: 0.6,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.shield_moon_outlined, size: 16, color: Colors.white70),
+                              SizedBox(width: 6),
+                              Text(
+                                'Data tersimpan hanya di perangkat ini',
+                                style: TextStyle(color: Colors.white70, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 18),
-                Text(
-                  userName ?? 'Guest User',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAvatar() {
+    return Center(
+      child: AnimatedBuilder(
+        animation: _glowCtrl,
+        builder: (context, _) {
+          final t = _glowCtrl.value;
+          final blur = 18 + 14 * t;
+          final spread = 1 + 2 * t;
+
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    colors: [Color(0xFF0A1430), Color(0xFF0A0F20)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00E5FF).withOpacity(0.35),
+                      blurRadius: blur,
+                      spreadRadius: spread,
+                    ),
+                    BoxShadow(
+                      color: const Color(0xFF7C4DFF).withOpacity(0.25),
+                      blurRadius: blur * 0.8,
+                      spreadRadius: spread * 0.6,
+                    ),
+                  ],
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.08),
+                    width: 2,
                   ),
                 ),
-                const SizedBox(height: 6),
-                _NeonPill(text: userEmail ?? 'guest@example.com'),
-                const SizedBox(height: 28),
-                _NeonDivider(label: 'Edit Information'),
-                const SizedBox(height: 16),
-                _NeonCard(
-                  child: Column(
-                    children: [
-                      _neonTextField(
-                        icon: Icons.person_outline,
-                        label: 'Nama Lengkap',
-                        controller: _nameController,
+                child: CustomPaint(
+                  painter: _SweepRingPainter(progress: t),
+                  child: Center(
+                    child: ClipOval(
+                      child: SizedBox(
+                        width: 110,
+                        height: 110,
+                        child: _profileImageBytes != null
+                            ? Image.memory(
+                          _profileImageBytes!,
+                          fit: BoxFit.cover,
+                        )
+                            : const Icon(Icons.person_rounded,
+                            color: Colors.white, size: 74),
                       ),
-                      const SizedBox(height: 12),
-                      _neonTextField(
-                        icon: Icons.email_outlined,
-                        label: 'Email',
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 12),
-                      _neonTextField(
-                        icon: Icons.lock_outline,
-                        label: 'Password (lihat / sembunyikan)',
-                        controller: _passController,
-                        obscure: true,
-                        obscureFlag: _obscurePass,
-                        onToggleObscure: () {
-                          setState(() => _obscurePass = !_obscurePass);
-                        },
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 22),
-                // 🔹 Tombol Simpan
-                Row(
+              ),
+              // tombol edit kecil di pojok kanan bawah avatar
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Row(
                   children: [
-                    Expanded(
-                      child: _NeonButton(
-                        text: _loading ? 'Menyimpan...' : 'Simpan Perubahan',
-                        icon: _loading
-                            ? Icons.hourglass_top_rounded
-                            : Icons.save_rounded,
-                        onPressed: _loading ? null : _saveUserData,
+                    if (_profileImageBytes != null)
+                      GestureDetector(
+                        onTap: _removeProfileImage,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0E1A33),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.08),
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.delete_outline,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _chooseImageSource,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0E1A33),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.08),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt_outlined,
+                          size: 18,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                // 🔹 Tombol Logout
-                Row(
-                  children: [
-                    Expanded(
-                      child: _NeonButton(
-                        text: 'Logout',
-                        icon: Icons.logout_rounded,
-                        onPressed: _logout,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                Opacity(
-                  opacity: 0.6,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.shield_moon_outlined,
-                          size: 16, color: Colors.white70),
-                      SizedBox(width: 6),
-                      Text(
-                        'Data tersimpan hanya di perangkat ini',
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

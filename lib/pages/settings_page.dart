@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -9,163 +12,119 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool isDarkMode = false;
-  String selectedLanguage = "English";
+  bool notifications = true;
 
-  Future<void> clearCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+  String appVersion = "";
+  String deviceInfo = "";
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Cache cleared successfully")),
-    );
+  @override
+  void initState() {
+    super.initState();
+    loadSettings();
   }
 
-  void resetApp() async {
+  Future<void> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("App has been reset")),
-    );
+    notifications = prefs.getBool("notifications") ?? true;
+
+    final info = await PackageInfo.fromPlatform();
+    appVersion = "${info.version}+${info.buildNumber}";
+
+    if (kIsWeb) {
+      deviceInfo = "Platform: Web Browser";
+    } else {
+      deviceInfo =
+      "OS: ${Platform.operatingSystem}\nVersion: ${Platform.operatingSystemVersion}";
+    }
+
+    setState(() {});
+  }
+
+  Future<void> save(String key, dynamic value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value is bool) prefs.setBool(key, value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Settings"),
-      ),
+      appBar: AppBar(title: const Text("Settings")),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         children: [
-          const Text(
-            "Appearance",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
 
-          const SizedBox(height: 8),
-
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: SwitchListTile(
-              title: const Text("Dark Mode"),
-              secondary: const Icon(Icons.dark_mode),
-              value: isDarkMode,
-              onChanged: (v) {
-                setState(() => isDarkMode = v);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "Theme changed to ${v ? "Dark" : "Light"}",
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
 
           const SizedBox(height: 20),
-          const Text(
-            "General",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
+          section("About"),
 
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text("Language"),
-              subtitle: Text(selectedLanguage),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(18)),
-                  ),
-                  builder: (_) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: const Text("English"),
-                        onTap: () {
-                          setState(() => selectedLanguage = "English");
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: const Text("Indonesia"),
-                        onTap: () {
-                          setState(() => selectedLanguage = "Indonesia");
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+          cardTile(
+            title: "Device Info",
+            icon: Icons.phone_android,
+            value: deviceInfo,
           ),
 
-          const SizedBox(height: 12),
-
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: ListTile(
-              leading: const Icon(Icons.delete_outline),
-              title: const Text("Clear Cache"),
-              onTap: clearCache,
-            ),
+          cardTile(
+            title: "App Version",
+            icon: Icons.info_outline,
+            value: appVersion,
           ),
 
-          const SizedBox(height: 12),
-
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: ListTile(
-              leading: const Icon(Icons.warning_amber),
-              title: const Text("Reset Application"),
-              onTap: () => resetApp(),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-          const Text(
-            "About",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-
-          const SizedBox(height: 8),
-
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: ListTile(
-              leading: const Icon(Icons.phone_android),
-              title: const Text("Device Info"),
-              subtitle: Text("Model, OS Version, etc (static demo)"),
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-            child: const ListTile(
-              leading: Icon(Icons.update),
-              title: Text("App Version"),
-              subtitle: Text("ORION SCHEMATIC v1.0.0"),
-            ),
+          cardTile(
+            title: "Check for Updates",
+            icon: Icons.system_update,
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("You're using the latest version"),
+                ),
+              );
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  // =============================================================================================
+
+  Widget section(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(title,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  Widget cardTile({
+    required String title,
+    required IconData icon,
+    String? value,
+    VoidCallback? onTap,
+  }) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: value != null ? Text(value) : null,
+        trailing: onTap != null ? const Icon(Icons.chevron_right) : null,
+        onTap: onTap,
+      ),
+    );
+  }
+
+  Widget cardSwitch({
+    required String title,
+    required IconData icon,
+    required bool value,
+    required Function(bool) onChanged,
+  }) {
+    return Card(
+      child: SwitchListTile(
+        secondary: Icon(icon),
+        title: Text(title),
+        value: value,
+        onChanged: onChanged,
       ),
     );
   }

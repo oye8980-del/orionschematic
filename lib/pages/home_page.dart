@@ -13,6 +13,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../data_loader.dart';
+import 'pdf_viewer_page.dart';
+import 'package:flutter/foundation.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 
 
 
@@ -20,6 +23,8 @@ import '../data_loader.dart';
 /* ---------------- HOME PAGE (Futuristic) ---------------- */
 class HomePageFuturistic extends StatefulWidget {
   const HomePageFuturistic({super.key, required this.onLogout});
+
+
 
   final VoidCallback onLogout; // pastikan ini ada
 
@@ -31,7 +36,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
   final List<Map<String, dynamic>> videoList = [
     {
       'title':
-          '𝐍𝐄𝐖 𝐁𝐈𝐓𝐌𝐀𝐏 𝐌𝐔𝐋𝐓𝐈𝐋𝐀𝐘𝐄𝐑 – 𝐢𝐏𝐡𝐨𝐧𝐞 𝟏𝟕 𝐏𝐫𝐨',
+      '𝐍𝐄𝐖 𝐁𝐈𝐓𝐌𝐀𝐏 𝐌𝐔𝐋𝐓𝐈𝐋𝐀𝐘𝐄𝐑 – 𝐢𝐏𝐡𝐨𝐧𝐞 𝟏𝟕 𝐏𝐫𝐨',
       'thumbnail': 'assets/videos/image1.png',
       'url': 'https://youtu.be/iYyB9Vc2Jr4?si=mAEDL4HpEsR9NBJK',
     },
@@ -72,6 +77,8 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -80,7 +87,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         'jenis': 'Detail Single Chip Pinout',
         'icon': Icons.bolt,
         'brands': [
-          {'name': 'Detail Single Chip Pinout', 'logo': 'assets/images/chip.jpeg'},
+          {'name': 'Detail Single Chip Pinout', 'logo': 'assets/brands/chip.jpeg'},
         ]
       },
 
@@ -88,7 +95,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         'jenis': 'Document & Datasheet',
         'icon': Icons.description,
         'brands': [
-          {'name': 'doc & data', 'logo': 'assets/images/dokumen.jpg'},
+          {'name': 'doc & data', 'logo': 'assets/brands/dokumen.jpg'},
         ]
       },
 
@@ -96,7 +103,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         'jenis': 'Drone & Quadcopter',
         'icon': Icons.flight,
         'brands': [
-          {'name': 'DJI', 'logo': 'assets/images/DJI.png'},
+          {'name': 'DJI', 'logo': 'assets/brands/DJI.png'},
         ]
       },
 
@@ -105,7 +112,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         'jenis': 'Gadget & Wearables',
         'icon': Icons.watch,
         'brands': [
-          {'name': 'produk gadget & wearables', 'logo': 'assets/images/gadgetwearables.jpg'},
+          {'name': 'produk gadget & wearables', 'logo': 'assets/brands/gadgetwearables.jpg'},
         ]
       },
 
@@ -218,13 +225,16 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/logo.png', height: 90),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    height: 90,
+                  ),
                   const SizedBox(height: 12),
                   const Text(
                     'ORION MENU',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
@@ -233,20 +243,22 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               ),
             ),
 
+
             // profil
             ListTile(
               leading: const Icon(Icons.person, color: Colors.white),
-              title: const Text(
-                'Profile',
-                style: TextStyle(color: Colors.white),
-              ),
+              title: const Text('Profile', style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(
+                    builder: (_) => const ProfilePage(),
+                  ),
                 );
               },
             ),
+
+
 
             // 🔹 Menu Home
             ListTile(
@@ -257,6 +269,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               },
             ),
 
+
             // 🔹 Menu About
             ListTile(
               leading: const Icon(Icons.info, color: Colors.white),
@@ -264,13 +277,14 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AboutPage()),
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
                 );
+
               },
             ),
 
-
             const Divider(color: Colors.white54, thickness: 0.5),
+
 
             // Menu exclusive
             Text(
@@ -300,9 +314,14 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             ]),
 
             const SizedBox(height: 28),
+
           ],
         ),
       ),
+
+
+
+
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(110),
@@ -313,9 +332,9 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               colors: theme.brightness == Brightness.dark
                   ? [const Color(0xFF071826), const Color(0xFF081A2A)]
                   : [
-                      const Color(0xFFFF6A00).withOpacity(0.95),
-                      const Color(0xFFFF3D00).withOpacity(0.95),
-                    ],
+                const Color(0xFFFF6A00).withOpacity(0.95),
+                const Color(0xFFFF3D00).withOpacity(0.95),
+              ],
             ),
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(26),
@@ -332,10 +351,8 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
           child: SafeArea(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, // ✅ sejajarkan secara vertikal
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // ✅ Tombol menu
                 Builder(
                   builder: (context) => IconButton(
                     icon: const Icon(Icons.menu, color: Colors.white, size: 28),
@@ -345,45 +362,35 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
                   ),
                 ),
 
-                // ✅ Teks di tengah
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // ✅ Logo ORION
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 12.0),
                         child: Image.asset(
-                          'assets/images/logo.png', // pastikan path benar di pubspec.yaml
-                          height: 55, // 🔥 ukuran logo lebih besar
+                          'assets/images/logo.png',
+                          height: 55,
                         ),
                       ),
 
-                      // ✅ Teks di sebelah logo
                       Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'ORION SCHEMATIC',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20, // 💪 sedikit lebih besar
-                                height: 1.1,
-                                letterSpacing: 1.0,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                        child: Text(
+                          'ORION SCHEMATIC',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            height: 1.1,
+                            letterSpacing: 1.0,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                // ✅ Ikon notifikasi di kanan
                 IconButton(
                   onPressed: () {
                     showDialog(
@@ -395,10 +402,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
                         ),
                         title: const Text(
                           '🔔 ORION Notification',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                         content: const Text(
                           'No new alerts at the moment.\nAll systems are running stable ⚡',
@@ -416,11 +420,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
                       ),
                     );
                   },
-                  icon: const Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                    size: 26,
-                  ),
+                  icon: const Icon(Icons.notifications, color: Colors.white, size: 26),
                 ),
               ],
             ),
@@ -428,14 +428,19 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         ),
       ),
 
+
+
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           children: [
             // announcement chip
+
+            // announcement chip
+
             const SizedBox(height: 14),
 
-            // Banner Marquee
+// Banner Marquee
             SizedBox(
               width: double.infinity,
               child: MarqueeBanner(images: [
@@ -445,11 +450,12 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
               ]),
             ),
 
-            // banner carousel (simple)
+            const SizedBox(height :16),
+// banner carousel LAMA (yang pakai _bannerCard)
             SizedBox(
               height: 150,
               child: PageView(
-                controller: PageController(viewportFraction: 0.92),
+                controller : PageController(viewportFraction: 0.92),
                 children: [
                   _bannerCard(
                     context,
@@ -474,106 +480,122 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             ),
             const SizedBox(height: 16),
 
-            // brands horizontal
-            // ============================================
-            //  🔹 GAWAI SELECTION SECTION (Home Page)
-            // ============================================
-            // === Daftar jenis gawai ===
+
+
+
+// === Daftar jenis gawai ===
             Text(
               'Pilih Jenis Gawai',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 18),
 
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                childAspectRatio: 0.84,
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 150,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: 0.92,
               ),
               itemCount: listGawai.length,
               itemBuilder: (context, index) {
                 final gawai = listGawai[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BrandPage(
-                          deviceCategory : gawai['jenis'],
-                          brands: gawai['brands'],
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(22),
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF1F2430),
-                          const Color(0xFF151922),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.35),
-                          blurRadius: 18,
-                          offset: const Offset(3, 5),
-                        ),
-                        BoxShadow(
-                          color: Colors.deepOrange.withOpacity(0.05),
-                          blurRadius: 24,
-                          offset: const Offset(-3, -2),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blueGrey.withOpacity(0.12),
-                            ),
-                            child: Icon(
-                              gawai['icon'],
-                              size: 30,
-                              color: Colors.lightBlue,
-                            ),
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BrandPage(
+                            deviceCategory: gawai['jenis'],
+                            brands: gawai['brands'],
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            gawai['jenis'],
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.1,
-                              fontSize: 13.2,
-                              color: Colors.white.withOpacity(0.95),
-                            ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF262C36),
+                            Color(0xFF1C2129),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.22),
+                            blurRadius: 12,
+                            offset: Offset(2, 4),
                           ),
                         ],
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.06),
+                          width: 1,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            // ICON CONTAINER
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.08),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.10),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                gawai['icon'],
+                                size: 26,
+                                color: Colors.cyanAccent,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // NAMA KATEGORI
+                            Text(
+                              gawai['jenis'],
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13.5,
+                                height: 1.22,
+                                color: Colors.white.withOpacity(0.96),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 );
               },
             ),
+
+
+
 
 
 
@@ -581,86 +603,116 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             const SizedBox(height: 8),
             const _UpdateListSection(),
 
-            // 🔹 Video Tutorial Section
-            const SizedBox(height: 20),
-            Text(
-              'Video Tutorial',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
+//-============vidio================-
+            LayoutBuilder(
+              builder: (context, constraints) {
+                int crossAxis = 2;       // default mobile
+                double aspect = 16 / 10; // default rasio
 
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 16 / 10,
-              ),
-              itemCount: videoList.length,
-              itemBuilder: (context, index) {
-                final video = videoList[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => VideoPlayerPage(
-                          title: video['title'],
-                          url: video['url'],
+                // Desktop
+                if (constraints.maxWidth >= 700) {
+                  crossAxis = 4;         // 4 kolom dalam 1 baris
+                  aspect = 16 / 10;      // biar proporsional
+                }
+
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxis,
+                    crossAxisSpacing: 14,
+                    mainAxisSpacing: 14,
+                    childAspectRatio: aspect,
+                  ),
+                  itemCount: videoList.length,
+                  itemBuilder: (context, index) {
+                    final video = videoList[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VideoPlayerPage(
+                              title: video['title'],
+                              url: video['url'],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.18),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Stack(
+                            children: [
+                              Image.asset(
+                                video['thumbnail'],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+
+                              Container(
+                                color: Colors.black.withOpacity(0.32),
+                              ),
+
+                              Center(
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.85),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.play_arrow_rounded,
+                                    size: 38,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+
+                              Positioned(
+                                bottom: 10,
+                                left: 10,
+                                right: 10,
+                                child: Text(
+                                  video['title'],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13.5,
+                                    height: 1.2,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black87,
+                                        blurRadius: 6,
+                                      ),
+                                    ],
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
                   },
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            image: AssetImage(video['thumbnail']),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.black.withOpacity(0.35),
-                        ),
-                      ),
-                      const Center(
-                        child: Icon(
-                          Icons.play_circle_fill,
-                          color: Colors.white,
-                          size: 50,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 8,
-                        left: 8,
-                        right: 8,
-                        child: Text(
-                          video['title'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            shadows: [
-                              Shadow(color: Colors.black54, blurRadius: 4),
-                            ],
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
                 );
               },
             ),
+
 
             // ======= Community =======
             Text(
@@ -741,7 +793,6 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
 
             const SizedBox(height: 40),
 
-
             // How to use
             Center(
               child: ElevatedButton.icon(
@@ -770,12 +821,9 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
     );
   }
 
-  // 🔹 fungsi tombol sosial futuristik
-  Widget _buildSocialButton({
-    required List<Color> gradientColors,
-    required IconData icon,
-    required String url,
-  }) {
+
+// 🔹 fungsi tombol sosial futuristik
+  Widget _buildSocialButton({required List<Color> gradientColors, required IconData icon, required String url,}) {
     return GestureDetector(
       onTap: () async {
         final uri = Uri.parse(url);
@@ -796,17 +844,13 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             ),
           ],
         ),
-        child: Center(child: Icon(icon, color: Colors.white, size: 26)),
+        child: Center(
+          child: Icon(icon, color: Colors.white, size: 26),
+        ),
       ),
     );
   }
-
-  Widget _bannerCard(
-    BuildContext context,
-    String title,
-    String sub,
-    IconData icon,
-  ) {
+  Widget _bannerCard(BuildContext context, String title, String sub, IconData icon,) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -821,11 +865,11 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         decoration: BoxDecoration(
           gradient: theme.brightness == Brightness.dark
               ? const LinearGradient(
-                  colors: [Color(0xFF052A36), Color(0xFF071826)],
-                )
+            colors: [Color(0xFF052A36), Color(0xFF071826)],
+          )
               : const LinearGradient(
-                  colors: [Color(0xFFFF9A00), Color(0xFFFF4D00)],
-                ),
+            colors: [Color(0xFFFF9A00), Color(0xFFFF4D00)],
+          ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -886,17 +930,17 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
         children: items
             .map(
               (it) => ListTile(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FolderDetailPage(folder: it),
-                  ),
-                ),
-                leading: const Icon(Icons.insert_drive_file_outlined),
-                title: Text(it),
-                trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => FolderDetailPage(folder: it),
               ),
-            )
+            ),
+            leading: const Icon(Icons.insert_drive_file_outlined),
+            title: Text(it),
+            trailing: const Icon(Icons.chevron_right),
+          ),
+        )
             .toList(),
       ),
     );
@@ -966,6 +1010,8 @@ class _MarqueeBannerState extends State<MarqueeBanner> {
   }
 }
 
+
+
 /* --------------- type page ------------------- */
 // ===== RESPONSIVE TYPE PAGE =====
 class TypePage extends StatefulWidget {
@@ -984,6 +1030,7 @@ class TypePage extends StatefulWidget {
 
 class _TypePageState extends State<TypePage> {
   String? _openedType;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1066,6 +1113,7 @@ class _TypePageState extends State<TypePage> {
                   padding: const EdgeInsets.only(left: 12, bottom: 8),
                   child: Column(
                     children: [
+                      // LAYOUT
                       ListTile(
                         dense: true,
                         leading: const Icon(Icons.grid_view_rounded, size: 22),
@@ -1083,6 +1131,8 @@ class _TypePageState extends State<TypePage> {
                           );
                         },
                       ),
+
+                      // SCHEMATIC
                       ListTile(
                         dense: true,
                         leading: const Icon(Icons.bolt_rounded, size: 22),
@@ -1095,6 +1145,25 @@ class _TypePageState extends State<TypePage> {
                               builder: (_) => TypeDetailPage(
                                 brandName: widget.brandName,
                                 componentName: '$typeName - Schematic',
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      // === GUIDELINE (BARU DITAMBAHKAN) ===
+                      ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.menu_book_rounded, size: 22),
+                        title: const Text('Guideline'),
+                        minLeadingWidth: 0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TypeDetailPage(
+                                brandName: widget.brandName,
+                                componentName: '$typeName - Guideline',
                               ),
                             ),
                           );
@@ -1113,10 +1182,16 @@ class _TypePageState extends State<TypePage> {
   }
 }
 
-/* --------------- type brand gawai page ------------- */
+
+
+
+/* ===============================================
+ *  TYPE DETAIL PAGE
+ * =============================================== */
 class TypeDetailPage extends StatefulWidget {
   final String brandName;
   final String componentName;
+
   const TypeDetailPage({
     required this.brandName,
     required this.componentName,
@@ -1128,8 +1203,13 @@ class TypeDetailPage extends StatefulWidget {
 }
 
 class _TypeDetailPageState extends State<TypeDetailPage> {
+  // CATEGORY SELECTOR
   String? selectedCategory;
 
+  // PDF PATH (tetap sesuai permintaan kamu)
+  final String schematicPDF = "assets/pdf/Layout.pdf";
+
+  // Warna highlight kategori
   final Map<String, Color> categoryColors = {
     'LCD': Colors.cyanAccent,
     'Network': Colors.yellowAccent,
@@ -1148,6 +1228,7 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
     'WiFi Bluetooth GPS': Colors.deepOrangeAccent,
   };
 
+  // List kategori guideline
   final List<String> categories = [
     'LCD',
     'Network',
@@ -1166,132 +1247,167 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
     'WiFi Bluetooth GPS',
   ];
 
+  // Multi SVG (saat ini kosong karena kamu belum isi)
   final Map<String, List<Map<String, dynamic>>> multiSvgMap = {};
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final bool isGuideline = widget.componentName.toLowerCase().contains("guideline");
+    final bool isSchematic = widget.componentName.toLowerCase().contains("schematic");
+
+    /* ===============================================
+     * 1. JIKA COMPONENT = SCHEMATIC → LANGSUNG BUKA PDF
+     * =============================================== */
+    if (isSchematic) {
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PDFViewerPage(pdfPath: schematicPDF),
+          ),
+        );
+      });
+
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    /* ===============================================
+     * 2. HALAMAN UTAMA (GUIDELINE ATAU EMPTY PAGE)
+     * =============================================== */
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.componentName),
-        backgroundColor: theme.brightness == Brightness.dark
-            ? const Color(0xFF0A192F)
-            : Colors.blue,
+        backgroundColor:
+        theme.brightness == Brightness.dark ? const Color(0xFF0A192F) : Colors.blue,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InteractiveViewer(
-              minScale: 0.5,
-              maxScale: 20.0,
-              boundaryMargin: const EdgeInsets.all(200),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    getImageForComponent(widget.componentName),
-                    fit: BoxFit.contain,
-                  ),
-                  if (selectedCategory != null)
-                    ..._buildSvgOverlaysForCategory(selectedCategory!),
-                ],
+
+      body: isGuideline ? _buildGuidelineUI() : _buildEmptyPlaceholder(),
+    );
+  }
+
+  /* ===============================================
+   *  GUIDE : TAMPILAN GUIDELINE DENGAN KATEGORI
+   * =============================================== */
+  Widget _buildGuidelineUI() {
+    return Column(
+      children: [
+        Expanded(
+          child: InteractiveViewer(
+            minScale: 0.5,
+            maxScale: 20.0,
+            boundaryMargin: const EdgeInsets.all(200),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  getImageForComponent(widget.componentName),
+                  fit: BoxFit.contain,
+                ),
+                if (selectedCategory != null)
+                  ..._buildSvgOverlaysForCategory(selectedCategory!),
+              ],
+            ),
+          ),
+        ),
+
+        _buildCategorySelector(),
+      ],
+    );
+  }
+
+  /* ===============================================
+   *  CATEGORY SELECTOR BUTTONS
+   * =============================================== */
+  Widget _buildCategorySelector() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: const Color(0xFF1E1E1E),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: categories.map((cat) {
+          final bool isSelected = selectedCategory == cat;
+
+          return GestureDetector(
+            onTap: () {
+              setState(() => selectedCategory = isSelected ? null : cat);
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              decoration: BoxDecoration(
+                color: isSelected ? const Color(0xFF0A192F) : Colors.grey.shade800,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isSelected ? (categoryColors[cat] ?? Colors.white) : Colors.transparent,
+                  width: 1.2,
+                ),
+              ),
+              child: Text(
+                cat,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.grey.shade300,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ),
-          ),
-
-
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: const Color(0xFF1E1E1E),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: categories.map((cat) {
-                final isSelected = selectedCategory == cat;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedCategory = null;
-                      } else {
-                        selectedCategory = cat;
-                      }
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFF0A192F)
-                          : Colors.grey.shade800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: isSelected
-                            ? (categoryColors[cat] ?? Colors.white)
-                            : Colors.transparent,
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Text(
-                      cat,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey.shade300,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }
 
+  /* ===============================================
+   *  SVG OVERLAY UNTUK SETIAP KATEGORI
+   * =============================================== */
   List<Widget> _buildSvgOverlaysForCategory(String category) {
-    final key = category;
-    final list = multiSvgMap[key];
+    final list = multiSvgMap[category];
 
+    // fallback jika tidak ada multi svg
     if (list == null || list.isEmpty) {
-      final fallback = getSvgForCategory(category);
       return [
         SvgPicture.asset(
-          fallback,
+          getSvgForCategory(category),
           fit: BoxFit.contain,
         ),
       ];
     }
 
+    // untuk multi SVG custom
     return list.map((item) {
-      final String file = item['file'] as String;
-      final Color? color = item['color'] as Color?;
       return SvgPicture.asset(
-        file,
+        item['file'],
         fit: BoxFit.contain,
-        colorFilter: color != null
-            ? ColorFilter.mode(color, BlendMode.srcIn)
+        colorFilter: item['color'] != null
+            ? ColorFilter.mode(item['color'], BlendMode.srcIn)
             : null,
       );
     }).toList();
   }
 
+  /* ===============================================
+   *  FALLBACK UI KOSONG
+   * =============================================== */
+  Widget _buildEmptyPlaceholder() {
+    return const Center(
+      child: Text(
+        "Belum ada file untuk ditampilkan",
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      ),
+    );
+  }
+
+  /* ===============================================
+   *  GETTER GAMBAR & SVG PER CATEGORY
+   * =============================================== */
   String getImageForComponent(String name) {
-    switch (name.toLowerCase()) {
-      case 'motherboard':
-      case 'cpu':
-      case 'galaxy s6 - layout':
-        return 'assets/images/Guideline/G532F.png';
-      default:
-        return 'assets/images/Guideline/G532F.png';
-    }
+    // future bisa dinamis, sekarang fix sesuai permintaan
+    return 'assets/images/Guideline/G532F.png';
   }
 
   String getSvgForCategory(String category) {
@@ -1331,6 +1447,10 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
     }
   }
 }
+
+
+
+
 // =====================  Bagian Release & Update =====================
 class _UpdateListSection extends StatefulWidget {
   const _UpdateListSection({Key? key}) : super(key: key);
@@ -1486,28 +1606,35 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  late YoutubePlayerController _controller;
+  YoutubePlayerController? _controller;
+  late String? _videoId;
 
   @override
   void initState() {
-    final videoId = YoutubePlayer.convertUrlToId(widget.url);
-
-    _controller = YoutubePlayerController(
-      initialVideoId: videoId ?? "",
-      flags: const YoutubePlayerFlags(
-        autoPlay: true,
-        forceHD: true,
-        controlsVisibleAtStart: true,
-        enableCaption: false,
-      ),
-    );
     super.initState();
+
+    _videoId = YoutubePlayer.convertUrlToId(widget.url);
+
+    if (!kIsWeb) {
+      // ANDROID CONTROLLER
+      _controller = YoutubePlayerController(
+        initialVideoId: _videoId ?? "",
+        flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          forceHD: true,
+          controlsVisibleAtStart: true,
+          enableCaption: false,
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
-    _controller.pause();
-    _controller.dispose();
+    if (!kIsWeb) {
+      _controller?.pause();
+      _controller?.dispose();
+    }
     super.dispose();
   }
 
@@ -1518,9 +1645,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
     return Scaffold(
       backgroundColor: darkBlue,
-
       appBar: AppBar(
-        automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
@@ -1529,159 +1654,131 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
             color: neonCyan,
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            letterSpacing: 0.6,
           ),
         ),
         centerTitle: true,
       ),
 
-      body: YoutubePlayerBuilder(
-        player: YoutubePlayer(controller: _controller),
-        builder: (context, player) {
-          return Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF031124), Color(0xFF020C18)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF031124), Color(0xFF020C18)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+
+                // 🔥 PLAYER CARD (ANDROID / WEB)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOutCubic,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    color: Colors.white.withOpacity(0.04),
+                    boxShadow: [
+                      BoxShadow(
+                        color: neonCyan.withOpacity(0.35),
+                        blurRadius: 25,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: neonCyan.withOpacity(0.35),
+                      width: 1.4,
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: _buildPlatformPlayer(),
+                ),
+
+                const SizedBox(height: 32),
+
+                // TITLE
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
 
-              // 🔥 Konten
-              SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
+                const SizedBox(height: 26),
 
-                    // PLAYER CARD
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeOutCubic,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: Colors.white.withOpacity(0.04),
-                        boxShadow: [
-                          BoxShadow(
-                            color: neonCyan.withOpacity(0.35),
-                            blurRadius: 25,
-                            spreadRadius: 1,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                        border: Border.all(
-                          color: neonCyan.withOpacity(0.35),
-                          width: 1.4,
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: player,
+                // DESCRIPTION
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: Colors.white.withOpacity(0.04),
+                    border: Border.all(
+                      color: neonCyan.withOpacity(0.22),
                     ),
-
-                    const SizedBox(height: 32),
-
-                    // ⭐ TITLE
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        widget.title,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          height: 1.3,
-                          letterSpacing: 0.7,
-                        ),
-                      ),
+                  ),
+                  child: const Text(
+                    "This exclusive Orion tutorial video will guide you through "
+                        "the most powerful features of the app including IC Finder, "
+                        "Board Analysis, File Navigation, and advanced professional tools.\n\n"
+                        "Enjoy HD playback with futuristic UI, neon glow visuals, "
+                        "and the best interactive learning experience.",
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 15.5,
+                      height: 1.55,
                     ),
-
-                    const SizedBox(height: 8),
-
-                    // ⭐ FULL WIDTH TITLE UNDERLINE (AUTO MATCH TEXT)
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final title = widget.title;
-                        final tp = TextPainter(
-                          text: TextSpan(
-                            text: title,
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.7,
-                            ),
-                          ),
-                          maxLines: 1,
-                          textDirection: TextDirection.ltr,
-                        )..layout();
-
-                        final textWidth = tp.width;
-
-                        return Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            width: textWidth, // AUTO MATCH TITLE
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: neonCyan,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: neonCyan.withOpacity(0.7),
-                                  blurRadius: 12,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 26),
-
-                    // DESCRIPTION BOX
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        color: Colors.white.withOpacity(0.04),
-                        border: Border.all(
-                          color: neonCyan.withOpacity(0.22),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: neonCyan.withOpacity(0.16),
-                            blurRadius: 18,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: const Text(
-                        "This exclusive Orion tutorial video will guide you through "
-                            "the most powerful features of the app including IC Finder, "
-                            "Board Analysis, File Navigation, and advanced professional tools.\n\n"
-                            "Enjoy HD playback with futuristic UI, neon glow visuals, "
-                            "and the best interactive learning experience.",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 15.5,
-                          height: 1.55,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 40),
-                  ],
+                  ),
                 ),
-              )
-            ],
-          );
-        },
+
+                const SizedBox(height: 40),
+              ],
+            ),
+          )
+        ],
       ),
+    );
+  }
+
+  /// 🔥 PLAYER BUILDER
+  Widget _buildPlatformPlayer() {
+    if (kIsWeb) {
+      // --- WEB PLAYER ---
+      return SizedBox(
+        height: 220,
+        child: WebViewX(
+          width: MediaQuery.of(context).size.width,
+          height: 220,
+          initialContent: """
+          <iframe 
+             width="100%" 
+             height="100%" 
+             src="https://www.youtube.com/embed/$_videoId" 
+             frameborder="0" 
+              allowfullscreen>
+        </iframe>
+          """,
+          initialSourceType: SourceType.html,
+        ),
+      );
+    }
+
+    // --- ANDROID PLAYER ---
+    return YoutubePlayer(
+      controller: _controller!,
+      showVideoProgressIndicator: true,
     );
   }
 }

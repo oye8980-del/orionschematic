@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /* --------------------------------------------------
-    PRODUCT MODEL
+PRODUCT MODEL
 -------------------------------------------------- */
 class Product {
   final String name;
@@ -13,10 +13,10 @@ class Product {
 }
 
 /* --------------------------------------------------
-    PRODUK LIST
+PRODUK LIST
 -------------------------------------------------- */
 final List<Product> products = [
-  Product(name: "DJI", image: "assets/images/DJI.png", price: 5000),
+  Product(name: "DJI", image: "assets/brands/DJI.png", price: 5000),
   Product(name: "IC Power MT6328", image: "assets/products/icpower.png", price: 45000),
   Product(name: "Transistor SMD", image: "assets/products/transistor.png", price: 2000),
   Product(name: "Resistor Pack", image: "assets/products/resistor.png", price: 1500),
@@ -25,7 +25,7 @@ final List<Product> products = [
 ];
 
 /* --------------------------------------------------
-    SHOP PAGE
+SHOP PAGE
 -------------------------------------------------- */
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
@@ -57,6 +57,7 @@ class _ShopPageState extends State<ShopPage> {
       cart = products.where((e) => names.contains(e.name)).toList();
       setState(() {});
     }
+
   }
 
   void addToCart(Product p) {
@@ -70,6 +71,7 @@ class _ShopPageState extends State<ShopPage> {
         backgroundColor: Colors.greenAccent.shade400,
       ),
     );
+
   }
 
   @override
@@ -77,7 +79,8 @@ class _ShopPageState extends State<ShopPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF0A1528),
       appBar: AppBar(
-        title: const Text("Orion Shop", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Orion Shop",
+            style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF0A1528),
         elevation: 0,
         actions: [
@@ -89,7 +92,8 @@ class _ShopPageState extends State<ShopPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CartPage(cart: cart, onUpdate: saveCart),
+                      builder: (_) =>
+                          CartPage(cart: cart, onUpdate: saveCart),
                     ),
                   );
                 },
@@ -111,27 +115,35 @@ class _ShopPageState extends State<ShopPage> {
           )
         ],
       ),
+
+      /* --------------------------------------------------
+      GRID PRODUK UPGRADED
+  -------------------------------------------------- */
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.70,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 800 ? 4 : 2,
+          crossAxisSpacing: 18,
+          mainAxisSpacing: 18,
+          childAspectRatio: 0.72,
         ),
         itemBuilder: (_, i) {
           final p = products[i];
 
           return Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF11273F),
-              borderRadius: BorderRadius.circular(18),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF132A45), Color(0xFF0D2238)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
-                  offset: const Offset(0, 3),
-                  blurRadius: 6,
+                  color: Colors.black.withOpacity(0.35),
+                  offset: const Offset(0, 4),
+                  blurRadius: 10,
                 )
               ],
             ),
@@ -141,24 +153,31 @@ class _ShopPageState extends State<ShopPage> {
 
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
                       p.image,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.image_not_supported, size: 50, color: Colors.white54),
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: Colors.white54,
+                      ),
                     ),
                   ),
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
                   child: Text(
                     p.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
 
@@ -167,7 +186,7 @@ class _ShopPageState extends State<ShopPage> {
                   style: const TextStyle(color: Colors.cyanAccent, fontSize: 15),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
 
                 SizedBox(
                   width: double.infinity,
@@ -175,14 +194,18 @@ class _ShopPageState extends State<ShopPage> {
                     onPressed: () => addToCart(p),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.cyanAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(18),
-                          bottomRight: Radius.circular(18),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
                       ),
                     ),
-                    child: const Text("Tambah"),
+                    child: const Text(
+                      "Tambah",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -190,12 +213,14 @@ class _ShopPageState extends State<ShopPage> {
           );
         },
       ),
+
     );
+
   }
 }
 
 /* --------------------------------------------------
-    CART PAGE — DELETE ITEM + CHECKOUT
+CART PAGE — DELETE + CHECKOUT
 -------------------------------------------------- */
 class CartPage extends StatefulWidget {
   final List<Product> cart;
@@ -241,7 +266,6 @@ class _CartPageState extends State<CartPage> {
         backgroundColor: const Color(0xFF0A1528),
         title: const Text("Keranjang Anda"),
       ),
-
       body: Column(
         children: [
           Expanded(
@@ -249,35 +273,48 @@ class _CartPageState extends State<CartPage> {
               itemCount: widget.cart.length,
               itemBuilder: (_, i) {
                 final p = widget.cart[i];
-
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  margin:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF132A45),
-                    borderRadius: BorderRadius.circular(14),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1B3552), Color(0xFF152B44)],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
                     children: [
-                      Image.asset(p.image, width: 62, height: 62, fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.broken_image, color: Colors.white)),
+                      Image.asset(
+                        p.image,
+                        width: 62,
+                        height: 62,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.broken_image,
+                            color: Colors.white),
+                      ),
                       const SizedBox(width: 12),
 
                       Expanded(
-                        child: Text(p.name,
-                            style: const TextStyle(color: Colors.white, fontSize: 16)),
+                        child: Text(
+                          p.name,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
                       ),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text("Rp ${p.price}",
-                              style: const TextStyle(color: Colors.cyanAccent)),
+                              style: const TextStyle(
+                                  color: Colors.cyanAccent)),
                           const SizedBox(height: 6),
                           GestureDetector(
                             onTap: () => deleteItem(i),
-                            child: const Icon(Icons.delete, color: Colors.redAccent),
+                            child: const Icon(Icons.delete,
+                                color: Colors.redAccent),
                           )
                         ],
                       )
@@ -288,17 +325,27 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
 
+          /* TOTAL & CHECKOUT */
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
             decoration: const BoxDecoration(
-              color: Color(0xFF11273F),
+              gradient: LinearGradient(
+                colors: [Color(0xFF11273F), Color(0xFF0D1F34)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
             ),
             child: Column(
               children: [
-                Text("Total: Rp $total",
-                    style: const TextStyle(
-                        color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  "Total: Rp $total",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 16),
 
                 SizedBox(
@@ -308,10 +355,13 @@ class _CartPageState extends State<CartPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: const Text("Bayar Sekarang",
-                        style: TextStyle(color: Colors.black)),
+                    child: const Text(
+                      "Bayar Sekarang",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -320,23 +370,23 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+
   }
 }
 
 /* --------------------------------------------------
-    PAYMENT PAGE — METODE PEMBAYARAN
+PAYMENT PAGE
 -------------------------------------------------- */
 class PaymentPage extends StatelessWidget {
   final int total;
   final List<Product> items;
   final Function onSuccess;
 
-  const PaymentPage({
-    super.key,
-    required this.total,
-    required this.items,
-    required this.onSuccess,
-  });
+  const PaymentPage(
+      {super.key,
+        required this.total,
+        required this.items,
+        required this.onSuccess});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +396,6 @@ class PaymentPage extends StatelessWidget {
         backgroundColor: const Color(0xFF0A1528),
         title: const Text("Pilih Metode Pembayaran"),
       ),
-
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -358,7 +407,8 @@ class PaymentPage extends StatelessWidget {
     );
   }
 
-  Widget paymentButton(BuildContext ctx, String title, IconData icon, String method) {
+  Widget paymentButton(
+      BuildContext ctx, String title, IconData icon, String method) {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       child: ElevatedButton(
@@ -393,7 +443,7 @@ class PaymentPage extends StatelessWidget {
 }
 
 /* --------------------------------------------------
-    PROCESSING PAGE — LOADER
+PROCESSING PAGE
 -------------------------------------------------- */
 class PaymentProcessingPage extends StatefulWidget {
   final String method;
@@ -401,13 +451,12 @@ class PaymentProcessingPage extends StatefulWidget {
   final List<Product> items;
   final Function onSuccess;
 
-  const PaymentProcessingPage({
-    super.key,
-    required this.method,
-    required this.total,
-    required this.items,
-    required this.onSuccess,
-  });
+  const PaymentProcessingPage(
+      {super.key,
+        required this.method,
+        required this.total,
+        required this.items,
+        required this.onSuccess});
 
   @override
   State<PaymentProcessingPage> createState() => _PaymentProcessingPageState();
@@ -417,7 +466,6 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(seconds: 3), () {
       saveTransaction();
     });
@@ -428,11 +476,9 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
 
     List<String> names = widget.items.map((e) => e.name).toList();
     List<String> history = prefs.getStringList("purchase_history") ?? [];
-
     history.add("${DateTime.now()} | ${names.join(", ")} | ${widget.total}");
 
     prefs.setStringList("purchase_history", history);
-
     widget.onSuccess();
 
     Navigator.pushReplacement(
@@ -441,13 +487,14 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
         builder: (_) => PaymentSuccessPage(total: widget.total),
       ),
     );
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A1528),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -464,7 +511,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
 }
 
 /* --------------------------------------------------
-    PAYMENT SUCCESS PAGE
+PAYMENT SUCCESS PAGE
 -------------------------------------------------- */
 class PaymentSuccessPage extends StatelessWidget {
   final int total;
@@ -479,15 +526,18 @@ class PaymentSuccessPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.check_circle, color: Colors.greenAccent, size: 90),
+            const Icon(Icons.check_circle,
+                color: Colors.greenAccent, size: 90),
             const SizedBox(height: 20),
 
             const Text("Pembayaran Berhasil!",
                 style: TextStyle(color: Colors.white, fontSize: 24)),
+
             const SizedBox(height: 10),
 
             Text("Total: Rp $total",
-                style: const TextStyle(color: Colors.cyanAccent, fontSize: 20)),
+                style: const TextStyle(
+                    color: Colors.cyanAccent, fontSize: 20)),
             const SizedBox(height: 30),
 
             ElevatedButton(
@@ -496,7 +546,8 @@ class PaymentSuccessPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.greenAccent,
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 14, horizontal: 30),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
               ),
@@ -507,7 +558,6 @@ class PaymentSuccessPage extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
-
-

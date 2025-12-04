@@ -145,7 +145,11 @@ class _RegisterPageState extends State<RegisterPage> {
       SnackBar(content: Text('🎉 Akun $name berhasil dibuat')),
     );
 
-    Navigator.pop(context);
+    Navigator.pop(context, {
+      'email': email,
+      'pass': pass,
+    });
+
   }
 
   double _passwordStrengthScore(String pw) {
@@ -172,157 +176,195 @@ class _RegisterPageState extends State<RegisterPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buat Akun Baru'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: theme.brightness == Brightness.dark
-                  ? [const Color(0xFF041021), const Color(0xFF072033)]
-                  : [const Color(0xFFFFF7ED), const Color(0xFFFCECE4)],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: theme.brightness == Brightness.dark
+              ? const LinearGradient(
+            colors: [Color(0xFF040B18), Color(0xFF0A1A33)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )
+              : const LinearGradient(
+            colors: [Color(0xFFFFF5EC), Color(0xFFFDE8D6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: ListView(
-                children: [
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      'Daftar Akun ORION',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _name,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Nama Lengkap',
-                      prefixIcon: Icon(Icons.person_outline),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: _validateName,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      border: const OutlineInputBorder(),
-                      helperText: widget.allowedDomains != null && widget.allowedDomains!.isNotEmpty
-                          ? 'Hanya domain: ${widget.allowedDomains!.join(', ')}'
-                          : 'Gunakan email aktif untuk verifikasi',
-                    ),
-                    validator: _validateEmail,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _pass,
-                    obscureText: _obscure,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () => setState(() => _obscure = !_obscure),
-                      ),
-                    ),
-                    validator: _validatePassword,
-                    onChanged: (_) => setState(() {}),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Password strength indicator
-                  Builder(builder: (ctx) {
-                    final score = _passwordStrengthScore(_pass.text);
-                    final percent = (score * 100).round();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LinearProgressIndicator(value: score),
-                        const SizedBox(height: 6),
-                        Text('Kekuatan password: $percent%'),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 6,
-                          children: [
-                            _ruleChip('≥8 chars', _hasMinLength(_pass.text)),
-                            _ruleChip('Upper', _hasUpper(_pass.text)),
-                            _ruleChip('Lower', _hasLower(_pass.text)),
-                            _ruleChip('Digit', _hasDigit(_pass.text)),
-                            _ruleChip('Special', _hasSpecial(_pass.text)),
-                          ],
-                        ),
-                      ],
-                    );
-                  }),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _confirm,
-                    obscureText: _obscureConfirm,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: 'Konfirmasi Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                      ),
-                    ),
-                    validator: _validateConfirm,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _loading
-                          ? null
-                          : () {
-                        if (_formKey.currentState!.validate()) _register();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: _loading
-                          ? const SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                          : const Text('Daftar Sekarang'),
-                    ),
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 480,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(22),
+              margin: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: BoxDecoration(
+                color: theme.cardColor.withOpacity(theme.brightness == Brightness.dark ? 0.6 : 0.85),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
                   ),
                 ],
+                border: Border.all(
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white.withOpacity(0.12)
+                      : Colors.black.withOpacity(0.05),
+                ),
+              ),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'Buat Akun Baru',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Daftar untuk melanjutkan ke ORION',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                    const SizedBox(height: 26),
+
+                    TextFormField(
+                      controller: _name,
+                      decoration: const InputDecoration(
+                        labelText: 'Nama Lengkap',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: _validateName,
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    TextFormField(
+                      controller: _email,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
+                        helperText: widget.allowedDomains != null &&
+                            widget.allowedDomains!.isNotEmpty
+                            ? 'Hanya domain: ${widget.allowedDomains!.join(', ')}'
+                            : 'Gunakan email aktif',
+                      ),
+                      validator: _validateEmail,
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    TextFormField(
+                      controller: _pass,
+                      obscureText: _obscure,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                              _obscure ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () => setState(() => _obscure = !_obscure),
+                        ),
+                      ),
+                      validator: _validatePassword,
+                      onChanged: (_) => setState(() {}),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Builder(builder: (ctx) {
+                      final score = _passwordStrengthScore(_pass.text);
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LinearProgressIndicator(value: score),
+                          const SizedBox(height: 6),
+                          Text('Kekuatan password: ${(score * 100).round()}%'),
+                        ],
+                      );
+                    }),
+
+                    const SizedBox(height: 18),
+
+                    TextFormField(
+                      controller: _confirm,
+                      obscureText: _obscureConfirm,
+                      decoration: InputDecoration(
+                        labelText: 'Konfirmasi Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureConfirm
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () =>
+                              setState(() => _obscureConfirm = !_obscureConfirm),
+                        ),
+                      ),
+                      validator: _validateConfirm,
+                    ),
+
+                    const SizedBox(height: 26),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _loading
+                                ? null
+                                : () {
+                              if (_formKey.currentState!.validate()) {
+                                _register();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: _loading
+                                ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                                : const Text('Daftar Sekarang'),
+                          ),
+                        ),
+
+                        SizedBox(width: 12),
+
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Kembali ke Login'),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
               ),
             ),
           ),

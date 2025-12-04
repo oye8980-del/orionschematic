@@ -8,6 +8,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:orionschematic/pages/home_shell.dart';
 import 'package:orionschematic/pages/login_page.dart';
+// ignore: avoid_web_libraries_in_flutter
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
