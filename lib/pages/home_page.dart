@@ -483,7 +483,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
 
 
 
-// === Daftar jenis gawai ===
+
             Text(
               'Pilih Jenis Gawai',
               style: theme.textTheme.titleMedium?.copyWith(
